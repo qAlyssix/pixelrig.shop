@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}Конфигуратор — PixelRig{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Соберите свой ПК</h1>
+<p class="page-subtitle">Выберите по одной детали в каждой категории. Итоговая цена считается сразу.</p>
+
+<form method="post" class="configurator">
+    <div class="config-parts">
+        {% for category, items in groups %}
+        <fieldset class="config-group">
+            <legend>{{ category }}</legend>
+            {% for item in items %}
+            <label class="option">
+                <input type="radio" name="{{ category }}" value="{{ item.id }}"
+                       data-price="{{ item.price }}"
+                       {% if selected[category] == item.id %}checked{% endif %}>
+                <span class="option-name">{{ item.name }}</span>
+                <span class="option-price">{{ item.price | price }}</span>
+            </label>
+            {% endfor %}
+        </fieldset>
+        {% endfor %}
+    </div>
+
+    <aside class="config-summary">
+        <div class="form-group">
+            <label for="name">Название сборки</label>
+            <input type="text" id="name" name="name" value="{{ build_name }}" maxlength="100" required>
+        </div>
+
+        <div class="summary-label">Итого</div>
+        <div class="summary-total" id="total">0 ₽</div>
+
+        {% if current_user.is_authenticated %}
+            <button type="submit" class="btn">Сохранить сборку</button>
+        {% else %}
+            <a href="{{ url_for('login', next=url_for('configurator')) }}" class="btn">Войдите, чтобы сохранить</a>
+        {% endif %}
+
+        <p class="summary-note">
+            Процессор и материнская плата должны иметь одинаковый сокет,
+            а блок питания — подходить по мощности к видеокарте.
+        </p>
+    </aside>
+</form>
+
+<script>
+    const form = document.querySelector('.configurator');
+    const totalEl = document.getElementById('total');
+
+    function updateTotal() {
+        let total = 0;
+        form.querySelectorAll('input[type="radio"]:checked').forEach(function (input) {
+            total += Number(input.dataset.price);
+        });
+        totalEl.textContent = total.toLocaleString('ru-RU') + ' ₽';
+    }
+
+    form.addEventListener('change', updateTotal);
+    updateTotal();
+</script>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}Главная — PixelRig{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <h1>Игровые компьютеры под любые задачи</h1>
+    <p>Выберите готовую сборку или соберите свой ПК в конфигураторе.</p>
+    <a href="{{ url_for('configurator') }}" class="btn">Создать свой</a>
+</section>
+
+<h2 class="section-title">Готовые сборки</h2>
+<div class="grid">
+    {% for computer in computers %}
+    <div class="card">
+        <a href="{{ url_for('computer_detail', computer_id=computer.id) }}" class="card-image">
+            {% if computer.image_exists %}
+                <img src="{{ url_for('static', filename='img/' + computer.image_file) }}" alt="{{ computer.name }}">
+            {% else %}
+                🖥️
+            {% endif %}
+        </a>
+        <h3>{{ computer.name }}</h3>
+        <p class="card-text">{{ computer.description }}</p>
+        <ul class="specs">
+            {% for part in computer.sorted_components %}
+                {% if part.category in ['Процессор', 'Видеокарта', 'Оперативная память'] %}
+                <li>{{ part.name }}</li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+        <div class="card-footer">
+            <span class="price">{{ computer.price | price }}</span>
+            <a href="{{ url_for('computer_detail', computer_id=computer.id) }}" class="btn btn-small">Подробнее</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

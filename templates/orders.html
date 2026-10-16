@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}Мои заказы — PixelRig{% endblock %}
+
+{% block content %}
+<div class="profile">
+    <a href="{{ url_for('profile') }}" class="back-link">← Профиль</a>
+    <h1 class="page-title">Мои заказы</h1>
+
+    {% if orders %}
+        <div class="build-list">
+            {% for order in orders %}
+            <a href="{{ url_for('order_detail', order_id=order.id) }}" class="build-item">
+                <div>
+                    <strong>Заказ №{{ order.id }}</strong>
+                    <div class="order-meta">{{ order.created_at | date }} · позиций: {{ order.items | length }}</div>
+                </div>
+                <div class="order-right">
+                    <span class="badge">{{ order.status }}</span>
+                    <strong>{{ order.total | price }}</strong>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <p>Вы ещё ничего не заказывали.</p>
+            <a href="{{ url_for('index') }}" class="btn">Перейти в каталог</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

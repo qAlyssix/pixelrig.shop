@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}Вход — PixelRig{% endblock %}
+
+{% block content %}
+<div class="form-card">
+    <h1>Вход</h1>
+
+    <form method="post">
+        <div class="form-group">
+            <label for="login">Логин или email</label>
+            <input type="text" id="login" name="login"
+                   value="{{ login_value or '' }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Пароль</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+
+        <label class="form-check">
+            <input type="checkbox" name="remember"> Запомнить меня
+        </label>
+
+        <button type="submit" class="btn">Войти</button>
+    </form>
+
+    <p class="form-footer">Нет аккаунта? <a href="{{ url_for('register') }}">Зарегистрироваться</a></p>
+</div>
+{% endblock %}

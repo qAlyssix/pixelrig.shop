@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}Профиль — PixelRig{% endblock %}
+
+{% block content %}
+<div class="profile">
+    <div class="form-card profile-card">
+        <h1>Профиль</h1>
+
+        <div class="profile-row">
+            <span>Логин</span>
+            <strong>{{ current_user.username }}</strong>
+        </div>
+        <div class="profile-row">
+            <span>Email</span>
+            <strong>{{ current_user.email }}</strong>
+        </div>
+
+                <div class="profile-actions">
+            <a href="{{ url_for('orders') }}" class="btn">Мои заказы</a>
+            <a href="{{ url_for('logout') }}" class="btn btn-danger">Выйти</a>
+        </div>
+
+    <h2 class="section-title profile-section">Мои сборки</h2>
+    {% if builds %}
+        <div class="build-list">
+            {% for build in builds %}
+            <a href="{{ url_for('computer_detail', computer_id=build.id) }}" class="build-item">
+                <span>{{ build.name }}</span>
+                <strong>{{ build.price | price }}</strong>
+            </a>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="empty-text">
+            У вас пока нет сборок. <a href="{{ url_for('configurator') }}">Собрать первую</a>
+        </p>
+    {% endif %}
+</div>
+{% endblock %}

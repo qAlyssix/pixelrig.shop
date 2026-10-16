@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}Корзина — PixelRig{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Корзина</h1>
+
+{% if items %}
+<div class="cart">
+    <div class="cart-items">
+        {% for item in items %}
+        <div class="cart-item">
+            <a href="{{ url_for('computer_detail', computer_id=item.computer.id) }}" class="cart-thumb">
+                {% if item.computer.image_exists %}
+                    <img src="{{ url_for('static', filename='img/' + item.computer.image_file) }}" alt="{{ item.computer.name }}">
+                {% else %}
+                    🖥️
+                {% endif %}
+            </a>
+
+            <div class="cart-info">
+                <a href="{{ url_for('computer_detail', computer_id=item.computer.id) }}" class="cart-name">
+                    {{ item.computer.name }}
+                </a>
+                <div class="cart-unit">{{ item.computer.price | price }} за шт.</div>
+            </div>
+
+            <form method="post" action="{{ url_for('update_cart', item_id=item.id) }}" class="qty">
+                <button type="submit" name="action" value="minus" class="qty-btn">−</button>
+                <span class="qty-value">{{ item.quantity }}</span>
+                <button type="submit" name="action" value="plus" class="qty-btn">+</button>
+            </form>
+
+            <div class="cart-total">{{ item.total | price }}</div>
+
+            <form method="post" action="{{ url_for('remove_from_cart', item_id=item.id) }}">
+                <button type="submit" class="remove-btn" title="Удалить">✕</button>
+            </form>
+        </div>
+        {% endfor %}
+    </div>
+
+    <aside class="config-summary">
+        <div class="summary-label">Товаров: {{ cart_count }}</div>
+        <div class="summary-label">Итого</div>
+        <div class="summary-total">{{ total | price }}</div>
+        <a href="{{ url_for('checkout') }}" class="btn">Оформить заказ</a>
+    </aside>
+</div>
+{% else %}
+<div class="empty-state">
+    <p>Корзина пока пуста.</p>
+    <a href="{{ url_for('index') }}" class="btn">Перейти в каталог</a>
+</div>
+{% endif %}
+{% endblock %}

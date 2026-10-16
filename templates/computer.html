@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ computer.name }} — PixelRig{% endblock %}
+
+{% block content %}
+{% if computer.is_custom %}
+    <a href="{{ url_for('profile') }}" class="back-link">← Мои сборки</a>
+{% else %}
+    <a href="{{ url_for('index') }}" class="back-link">← Назад в каталог</a>
+{% endif %}
+
+<div class="detail">
+    <div class="detail-image">
+        {% if computer.image_exists %}
+            <img src="{{ url_for('static', filename='img/' + computer.image_file) }}" alt="{{ computer.name }}">
+        {% else %}
+            🖥️
+        {% endif %}
+    </div>
+
+    <div class="detail-info">
+        {% if computer.is_custom %}
+            <span class="badge">Ваша сборка</span>
+        {% endif %}
+        <h1>{{ computer.name }}</h1>
+        {% if computer.description %}
+            <p class="card-text">{{ computer.description }}</p>
+        {% endif %}
+        <div class="detail-price">{{ computer.price | price }}</div>
+
+                        <div class="detail-actions">
+            {% if current_user.is_authenticated %}
+            <form method="post" action="{{ url_for('add_to_cart', computer_id=computer.id) }}">
+                <button type="submit" class="btn">В корзину</button>
+            </form>
+            {% else %}
+            <a href="{{ url_for('login', next=url_for('computer_detail', computer_id=computer.id)) }}" class="btn">
+                Войдите, чтобы купить
+            </a>
+            {% endif %}
+
+            {% if computer.is_custom %}
+            <form method="post" action="{{ url_for('delete_computer', computer_id=computer.id) }}"
+                  onsubmit="return confirm('Удалить эту сборку?');">
+                <button type="submit" class="btn btn-danger">Удалить</button>
+            </form>
+            {% endif %}
+        </div>
+        </div>
+    </div>
+</div>
+
+<h2 class="section-title">Характеристики</h2>
+<table class="spec-table">
+    {% for part in computer.sorted_components %}
+    <tr>
+        <td class="spec-category">{{ part.category }}</td>
+        <td>{{ part.name }}</td>
+        <td class="spec-price">{{ part.price | price }}</td>
+    </tr>
+    {% endfor %}
+    <tr class="spec-total">
+        <td colspan="2">Итого</td>
+        <td class="spec-price">{{ computer.price | price }}</td>
+    </tr>
+</table>
+{% endblock %}

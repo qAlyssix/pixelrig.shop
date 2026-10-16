@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}Заказ №{{ order.id }} — PixelRig{% endblock %}
+
+{% block content %}
+<a href="{{ url_for('orders') }}" class="back-link">← Мои заказы</a>
+
+<div class="order-header">
+    <div>
+        <h1 class="page-title">Заказ №{{ order.id }}</h1>
+        <div class="order-meta">от {{ order.created_at | date }}</div>
+    </div>
+    <span class="badge">{{ order.status }}</span>
+</div>
+
+<div class="order-info">
+    <div class="profile-row">
+        <span>Получатель</span>
+        <strong>{{ order.full_name }}</strong>
+    </div>
+    <div class="profile-row">
+        <span>Телефон</span>
+        <strong>{{ order.phone }}</strong>
+    </div>
+    <div class="profile-row">
+        <span>Адрес</span>
+        <strong>{{ order.address }}</strong>
+    </div>
+    {% if order.comment %}
+    <div class="profile-row">
+        <span>Комментарий</span>
+        <strong>{{ order.comment }}</strong>
+    </div>
+    {% endif %}
+</div>
+
+<h2 class="section-title">Состав заказа</h2>
+<table class="spec-table">
+    {% for item in order.items %}
+    <tr>
+        <td>
+            <strong>{{ item.name }}</strong>
+            <div class="order-components">{{ item.components }}</div>
+        </td>
+        <td class="spec-price">{{ item.price | price }} × {{ item.quantity }}</td>
+        <td class="spec-price">{{ item.total | price }}</td>
+    </tr>
+    {% endfor %}
+    <tr class="spec-total">
+        <td colspan="2">Итого</td>
+        <td class="spec-price">{{ order.total | price }}</td>
+    </tr>
+</table>
+{% endblock %}

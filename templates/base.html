@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}PixelRig{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🖥️</text></svg>">
+</head>
+<body>
+    <header class="header">
+        <div class="container header-inner">
+            <a href="{{ url_for('index') }}" class="logo">Pixel<span>Rig</span></a>
+            <nav class="nav">
+    <a href="{{ url_for('index') }}"
+       {% if request.endpoint in ['index', 'computer_detail'] %}class="active"{% endif %}>Каталог</a>
+    <a href="{{ url_for('configurator') }}"
+       {% if request.endpoint == 'configurator' %}class="active"{% endif %}>Создать свой</a>
+    <a href="{{ url_for('cart') }}"
+       {% if request.endpoint in ['cart', 'checkout'] %}class="active"{% endif %}>
+        Корзина{% if cart_count %} <span class="cart-count">{{ cart_count }}</span>{% endif %}
+    </a>
+    {% if current_user.is_authenticated %}
+        <a href="{{ url_for('profile') }}"
+           {% if request.endpoint in ['profile', 'orders', 'order_detail'] %}class="active"{% endif %}>👤 {{ current_user.username }}</a>
+        <a href="{{ url_for('logout') }}" class="btn btn-small">Выйти</a>
+    {% else %}
+        <a href="{{ url_for('login') }}"
+           {% if request.endpoint == 'login' %}class="active"{% endif %}>Войти</a>
+        <a href="{{ url_for('register') }}" class="btn btn-small">Регистрация</a>
+    {% endif %}
+</nav>
+        </div>
+    </header>
+
+    <main class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <div class="flash flash-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <div class="container">© 2026 PixelRig</div>
+    </footer>
+    <script>
+    setTimeout(function () {
+        document.querySelectorAll('.flash').forEach(function (el) {
+            el.style.transition = 'opacity 0.5s';
+            el.style.opacity = '0';
+            setTimeout(function () { el.remove(); }, 500);
+        });
+    }, 4000);
+</script>
+</body>
+</html>

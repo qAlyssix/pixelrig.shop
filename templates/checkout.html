@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}Оформление заказа — PixelRig{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Оформление заказа</h1>
+
+<form method="post" class="cart">
+    <div class="form-card checkout-card">
+        <div class="form-group">
+            <label for="full_name">Имя получателя</label>
+            <input type="text" id="full_name" name="full_name"
+                   value="{{ form.full_name }}" maxlength="100" required>
+        </div>
+
+        <div class="form-group">
+            <label for="phone">Телефон</label>
+            <input type="tel" id="phone" name="phone" value="{{ form.phone }}"
+                   placeholder="+7 900 123-45-67" maxlength="30" required>
+        </div>
+
+        <div class="form-group">
+            <label for="address">Адрес доставки</label>
+            <textarea id="address" name="address" rows="3" maxlength="300" required>{{ form.address }}</textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="comment">Комментарий к заказу</label>
+            <textarea id="comment" name="comment" rows="2" maxlength="300">{{ form.comment }}</textarea>
+        </div>
+    </div>
+
+    <aside class="config-summary">
+        {% for item in items %}
+        <div class="summary-line">
+            <span>{{ item.computer.name }} × {{ item.quantity }}</span>
+            <span>{{ item.total | price }}</span>
+        </div>
+        {% endfor %}
+
+        <div class="summary-label">Итого</div>
+        <div class="summary-total">{{ total | price }}</div>
+        <button type="submit" class="btn">Подтвердить заказ</button>
+        <p class="summary-note">Оплата при получении. Менеджер свяжется с вами для подтверждения.</p>
+    </aside>
+</form>
+{% endblock %}
